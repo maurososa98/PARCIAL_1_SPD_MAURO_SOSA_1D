@@ -1,0 +1,263 @@
+// C++ code
+// Mauro Sosa 1D
+#define A 10
+#define B 11
+#define C 5
+#define D 6
+#define E 7
+#define F 9
+#define G 8
+#define RESET 4
+#define SUBE 3
+#define BAJA 2
+
+#define UNIDAD A4
+#define DECENA A5
+
+#define APAGADOS 0
+#define TIEMPO_DISPAY_ON 10
+
+int contadorDecena = 0;
+int contadorUnidad = 0;
+
+int noPresionoSube;
+int noPresionoBaja;
+int noPresionoReset;
+
+void setup()
+{
+  pinMode(RESET, INPUT_PULLUP);
+  pinMode(SUBE, INPUT_PULLUP);
+  pinMode(BAJA, INPUT_PULLUP);
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(C, OUTPUT);
+  pinMode(D, OUTPUT);
+  pinMode(E, OUTPUT);
+  pinMode(F, OUTPUT);
+  pinMode(G, OUTPUT);
+  pinMode(UNIDAD, OUTPUT);
+  pinMode(DECENA, OUTPUT);
+}
+
+void loop()
+{
+  int sube = digitalRead(SUBE);
+  int baja = digitalRead(BAJA);
+  int reset = digitalRead(RESET);
+  
+  // Control del boton Sube
+  if (sube == 1)
+  {
+    noPresionoSube = 1;
+  }
+  if (sube == 0 && noPresionoSube == 1)
+  {
+    noPresionoSube = 0;
+    contadorDecena += 1;
+	contadorUnidad += 10;
+  }
+  
+  // Control del boton Baja
+  if (baja == 1)
+  {
+    noPresionoBaja = 1;
+  }
+  if (baja == 0 && noPresionoBaja == 1)
+  {
+    noPresionoBaja = 0;
+    contadorDecena -= 1;
+	contadorUnidad -= 10;
+  }
+  
+  // Control del boton Reset
+  if (reset == 1)
+  {
+    noPresionoReset = 1;
+  }
+  if (reset == 0 && noPresionoReset == 1)
+  {
+    noPresionoReset = 0;
+    contadorDecena = 0;
+	contadorUnidad = 0;
+  }
+  
+  // Se controla a los acumuladores
+  // Decena
+  if(contadorDecena == 100)
+  {
+    contadorDecena = 0;
+  }
+  else if(contadorDecena == -1)
+  {
+    contadorDecena = 99;
+  }
+  
+  // Unidad
+  if(contadorUnidad == 100)
+  {
+    contadorUnidad = 0;
+  }
+  else if(contadorUnidad == -10)
+  {
+    contadorUnidad = 90;
+  }
+  
+  imprimirDisplay(contadorDecena, contadorUnidad);
+}
+
+void imprimirDisplay (int contadorDecena, int contadorUnidad)
+{
+  prendeDisplay(APAGADOS);
+  imprimirDigito(contadorDecena / 10);
+  prendeDisplay(DECENA);
+  
+  prendeDisplay(APAGADOS);
+  imprimirDigito(contadorUnidad / 10);
+  prendeDisplay(UNIDAD);
+}
+
+void prendeDisplay (int display)
+{
+  if (display == APAGADOS)
+  {
+    digitalWrite(UNIDAD, HIGH);
+    digitalWrite(DECENA, HIGH);
+  }
+  else if (display == DECENA)
+  {
+    digitalWrite(UNIDAD, HIGH);
+    digitalWrite(DECENA, LOW);
+    delay(TIEMPO_DISPAY_ON);
+  }
+  else if (display == UNIDAD)
+  {
+    digitalWrite(UNIDAD, LOW); 
+    digitalWrite(DECENA, HIGH);
+    delay(TIEMPO_DISPAY_ON);
+  }
+}
+
+void imprimirDigito (int digito)
+{
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(E, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(G, LOW);
+  switch (digito)
+  {
+    case 1:
+    {
+      digitalWrite(A, LOW);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, LOW);
+      digitalWrite(E, LOW);
+      digitalWrite(F, LOW);
+      digitalWrite(G, LOW);
+      break;
+    }
+    case 2:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, LOW);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, HIGH);
+      digitalWrite(F, LOW);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 3:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, LOW);
+      digitalWrite(F, LOW);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 4:
+    {
+      digitalWrite(A, LOW);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, LOW);
+      digitalWrite(E, LOW);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 5:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, LOW);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, LOW);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 6:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, LOW);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, HIGH);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 7:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, LOW);
+      digitalWrite(E, LOW);
+      digitalWrite(F, LOW);
+      digitalWrite(G, LOW);
+      break;
+    }
+    case 8:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, HIGH);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 9:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, LOW);
+      digitalWrite(E, LOW);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 0:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, HIGH);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, LOW);
+      break;
+    }
+  }
+}
