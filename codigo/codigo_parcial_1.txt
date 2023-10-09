@@ -19,7 +19,7 @@
 #define ENTRADA_UNO_MOTOR A2
 #define ENTRADA_DOS_MOTOR A3
 
-#define SENSOR A1
+#define SENSOR_TEMPERATURA A1
 
 #define APAGADOS 0
 #define TIEMPO_DISPAY_ON 10
@@ -38,7 +38,7 @@ bool banderaPrendido = false;
 
 int opcion;
 
-float temperatura = 0.0;
+int temperatura = 0;
 int lectura = 0;
 
 void setup()
@@ -71,13 +71,13 @@ void setup()
 void loop()
 {
   //Serial.println(temperatura);
-  lectura = analogRead(SENSOR);
-  temperatura = ( lectura * (500.0 / 1023.0) ) - 50.0;
+  lectura = analogRead(SENSOR_TEMPERATURA);
+  temperatura = map(lectura,20,358,-40,125);
   
   if (Serial.available()>0){
     opcion = Serial.read();
     if (opcion == '1'){
-      Serial.println("Motor prendido");
+      Serial.println("Motor prendido (Temp. Funcionamiento -> 0 C a 30 C");
       banderaPrendido = true;
     }
     else if (opcion == '2'){
@@ -103,7 +103,7 @@ void loop()
 
     switch (modo){
       case 1:
-      if (temperatura <= 100)
+      if (temperatura >= 0 && temperatura <= 30)
       {
         digitalWrite(ENTRADA_UNO_MOTOR, HIGH);
         digitalWrite(ENTRADA_DOS_MOTOR, LOW);
@@ -159,7 +159,7 @@ void loop()
       break;
 
       case 0:
-      if (temperatura <= 100)
+      if (temperatura >= 0 && temperatura <= 30)
       {
         digitalWrite(ENTRADA_UNO_MOTOR, LOW);
         digitalWrite(ENTRADA_DOS_MOTOR, HIGH);

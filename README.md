@@ -17,24 +17,138 @@ El proyecto costa de dos display 7 segmentos, los cuales a través de un interru
 - Números primos
 - Contador 0 a 99
 
-Además, la función general del proyecto es controlar un motor de aficionado, el cual será puesto en marcha una vez que el usuario ingrese la opción indicada por terminal. Estará vinculado con un sensor de temperatura, que apagará el motor una vez este llegue a una temperatura superior a 100 °C. El giro del motor dependerá del estado del interruptor deslizante (switch).
+Además, la función general del proyecto es controlar un motor de aficionado, el cual será puesto en marcha una vez que el usuario ingrese la opción indicada por terminal. Estará vinculado con un sensor de temperatura, que mantendra el motor prendido entre las temperaturas 0°C a 30°C. El giro del motor dependerá del estado del interruptor deslizante (switch).
 
 ## Función principal
 
-- imprimirDisplay
-- prendeDisplay
-- imprimirDigito
-- esPrimo
-- numeroPrimoDisplay
+- imprimirDigito()
 
 ```C (lenguaje en el que esta escrito)
-void EncenderBinario(int estado3, int estado2,int estado1,int estado0)
+void imprimirDigito (int digito)
 {
-  digitalWrite(B3,estado3);
-  digitalWrite(B2,estado2);
-  digitalWrite(B1,estado1);
-  digitalWrite(B0,estado0);
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(E, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(G, LOW);
+  switch (digito)
+  {
+    case 1:
+    {
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      break;
+    }
+    case 2:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 3:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 4:
+    {
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 5:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 6:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, HIGH);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 7:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      break;
+    }
+    case 8:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, HIGH);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 9:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(F, HIGH);
+      digitalWrite(G, HIGH);
+      break;
+    }
+    case 0:
+    {
+      digitalWrite(A, HIGH);
+      digitalWrite(B, HIGH);
+      digitalWrite(C, HIGH);
+      digitalWrite(D, HIGH);
+      digitalWrite(E, HIGH);
+      digitalWrite(F, HIGH);
+      break;
+    }
+  }
 }
+```
+
+- imprimirDisplay()
+
+```C (lenguaje en el que esta escrito)
+
+```
+
+- prendeDisplay()
+
+```C (lenguaje en el que esta escrito)
+
+```
+
+- esPrimo()
+
+```C (lenguaje en el que esta escrito)
+
+```
+
+- numeroPrimoDisplay()
+
+```C (lenguaje en el que esta escrito)
+
 ```
 
 ## :robot: Link al proyecto
@@ -43,7 +157,7 @@ void EncenderBinario(int estado3, int estado2,int estado1,int estado0)
 
 ---
 
-### Fuentes
+<!-- ### Fuentes
 
 - [Consejos para documentar](https://www.sohamkamani.com/how-to-write-good-documentation/#architecture-documentation).
 
@@ -55,4 +169,4 @@ void EncenderBinario(int estado3, int estado2,int estado1,int estado0)
 
 - [Emojis](https://gist.github.com/rxaviers/7360908).
 
----
+--- -->
