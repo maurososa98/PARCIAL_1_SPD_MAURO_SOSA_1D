@@ -16,7 +16,8 @@ El proyecto costa de dos display 7 segmentos, los cuales a través de un interru
 
 - Números primos
 - Contador 0 a 99
-  Además, la función general del proyecto es controlar un motor de aficionado, el cual será puesto en marcha una vez que el usuario ingrese la opción indicada por terminal. Estará vinculado con un sensor de temperatura, que apagará el motor una vez este llegue a una temperatura superior a 100 °C. El giro del motor dependerá del estado del interruptor deslizante (switch).
+
+Además, la función general del proyecto es controlar un motor de aficionado, el cual será puesto en marcha una vez que el usuario ingrese la opción indicada por terminal. Estará vinculado con un sensor de temperatura, que apagará el motor una vez este llegue a una temperatura superior a 100 °C. El giro del motor dependerá del estado del interruptor deslizante (switch).
 
 ## Función principal
 
