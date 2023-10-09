@@ -12,13 +12,19 @@
 
 ## Descripción
 
-En este parrafo deberan describir que funcion cumple su proyecto. Que solucion esta ofreciendo.
+El proyecto costa de dos display 7 segmentos, los cuales a través de un interruptor deslizante (switch) y dos botones (conexión pullup) logran indicar:
+
+- Números primos
+- Contador 0 a 99
+  Además, la función general del proyecto es controlar un motor de aficionado, el cual será puesto en marcha una vez que el usuario ingrese la opción indicada por terminal. Estará vinculado con un sensor de temperatura, que apagará el motor una vez este llegue a una temperatura superior a 100 °C. El giro del motor dependerá del estado del interruptor deslizante (switch).
 
 ## Función principal
 
-Esta funcion se encarga de ...
-
-(Breve explicación de la función)
+- imprimirDisplay
+- prendeDisplay
+- imprimirDigito
+- esPrimo
+- numeroPrimoDisplay
 
 ```C (lenguaje en el que esta escrito)
 void EncenderBinario(int estado3, int estado2,int estado1,int estado0)
@@ -32,7 +38,7 @@ void EncenderBinario(int estado3, int estado2,int estado1,int estado0)
 
 ## :robot: Link al proyecto
 
-- [proyecto](https://www.tinkercad.com/things/kyemdaCCyvb-mauro-sosa-1d-parcial-parte-1/editel?sharecode=qnCegogj4tqAfWEaPrmP1Rcsr2cL0mo7TipR9_Sqyaw)
+- [proyecto](https://www.tinkercad.com/things/2qQMSe9IU7U-mauro-sosa-1d-parcial-parte-2-/editel?sharecode=W0wKO39AYSWAxuNdpO5i2tp-pWip2XSOkXhDSDocGd0)
 
 ---
 

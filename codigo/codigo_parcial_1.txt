@@ -7,12 +7,19 @@
 #define E 7
 #define F 9
 #define G 8
-#define RESET 4
+
+#define MODO 4
+
 #define SUBE 3
 #define BAJA 2
 
 #define UNIDAD A4
 #define DECENA A5
+
+#define ENTRADA_UNO_MOTOR A2
+#define ENTRADA_DOS_MOTOR A3
+
+#define SENSOR A1
 
 #define APAGADOS 0
 #define TIEMPO_DISPAY_ON 10
@@ -20,15 +27,22 @@
 int contadorDecena = 0;
 int contadorUnidad = 0;
 
+int contadorPrimos = 0;
+
 int noPresionoSube;
 int noPresionoBaja;
-int noPresionoReset;
+
+bool banderaSwitch = false;
+
+bool banderaPrendido = false;
+
+int opcion;
+
+float temperatura = 0.0;
+int lectura = 0;
 
 void setup()
 {
-  pinMode(RESET, INPUT_PULLUP);
-  pinMode(SUBE, INPUT_PULLUP);
-  pinMode(BAJA, INPUT_PULLUP);
   pinMode(A, OUTPUT);
   pinMode(B, OUTPUT);
   pinMode(C, OUTPUT);
@@ -36,84 +50,189 @@ void setup()
   pinMode(E, OUTPUT);
   pinMode(F, OUTPUT);
   pinMode(G, OUTPUT);
+  
+  pinMode(MODO, INPUT_PULLUP);
+  
+  pinMode(SUBE, INPUT_PULLUP);
+  pinMode(BAJA, INPUT_PULLUP);
+  
   pinMode(UNIDAD, OUTPUT);
   pinMode(DECENA, OUTPUT);
+  
+  pinMode(ENTRADA_UNO_MOTOR, OUTPUT);
+  pinMode(ENTRADA_DOS_MOTOR, OUTPUT);
+    
+  Serial.begin(9600);
+  Serial.println("Ingrese una opcion:");
+  Serial.println("1 - Encender Motor");
+  Serial.println("2 - Apagar Motor");
 }
 
 void loop()
 {
-  int sube = digitalRead(SUBE);
-  int baja = digitalRead(BAJA);
-  int reset = digitalRead(RESET);
+  //Serial.println(temperatura);
+  lectura = analogRead(SENSOR);
+  temperatura = ( lectura * (500.0 / 1023.0) ) - 50.0;
   
-  // Control del boton Sube
-  if (sube == 1)
-  {
-    noPresionoSube = 1;
-  }
-  if (sube == 0 && noPresionoSube == 1)
-  {
-    noPresionoSube = 0;
-    contadorDecena += 1;
-	contadorUnidad += 10;
-  }
-  
-  // Control del boton Baja
-  if (baja == 1)
-  {
-    noPresionoBaja = 1;
-  }
-  if (baja == 0 && noPresionoBaja == 1)
-  {
-    noPresionoBaja = 0;
-    contadorDecena -= 1;
-	contadorUnidad -= 10;
+  if (Serial.available()>0){
+    opcion = Serial.read();
+    if (opcion == '1'){
+      Serial.println("Motor prendido");
+      banderaPrendido = true;
+    }
+    else if (opcion == '2'){
+      digitalWrite(ENTRADA_UNO_MOTOR, LOW);
+      digitalWrite(ENTRADA_DOS_MOTOR, LOW);
+      
+      digitalWrite(UNIDAD, HIGH);
+      digitalWrite(DECENA, HIGH);
+      
+      Serial.println("Motor apagado");
+      banderaPrendido = false;
+    }
+    else {
+      Serial.println("INVALIDO, Ingrese opcion corecta");
+    }
   }
   
-  // Control del boton Reset
-  if (reset == 1)
+  if (banderaPrendido)
   {
-    noPresionoReset = 1;
+    int sube = digitalRead(SUBE);
+    int baja = digitalRead(BAJA);
+    int modo = digitalRead(MODO);
+
+    switch (modo){
+      case 1:
+      if (temperatura <= 100)
+      {
+        digitalWrite(ENTRADA_UNO_MOTOR, HIGH);
+        digitalWrite(ENTRADA_DOS_MOTOR, LOW);
+      }
+      else{
+        digitalWrite(ENTRADA_UNO_MOTOR, LOW);
+      	digitalWrite(ENTRADA_DOS_MOTOR, LOW);
+      }
+      
+      banderaSwitch = true;
+      // Control del boton Sube
+      if (sube == 1)
+      {
+        noPresionoSube = 1;
+      }
+      if (sube == 0 && noPresionoSube == 1)
+      {
+        noPresionoSube = 0;
+        contadorPrimos += 1;
+        while (esPrimo(contadorPrimos) == false)
+        {
+          contadorPrimos += 1;
+        }
+      }
+
+      // Control del boton Baja
+      if (baja == 1)
+      {
+        noPresionoBaja = 1;
+      }
+      if (baja == 0 && noPresionoBaja == 1)
+      {
+        noPresionoBaja = 0;
+        contadorPrimos -= 1;
+        while (esPrimo(contadorPrimos) == false)
+        {
+          contadorPrimos -= 1;
+        }
+      }
+
+      // Se controla el rango
+      if(contadorPrimos > 97)
+      {
+        contadorPrimos = 0;
+      }
+      else if(contadorPrimos < 0)
+      {
+        contadorPrimos = 97;
+      }
+
+      numeroPrimoDisplay(contadorPrimos);
+      imprimirDisplay(contadorDecena, contadorUnidad);
+      break;
+
+      case 0:
+      if (temperatura <= 100)
+      {
+        digitalWrite(ENTRADA_UNO_MOTOR, LOW);
+        digitalWrite(ENTRADA_DOS_MOTOR, HIGH);
+      }
+      else{
+        digitalWrite(ENTRADA_UNO_MOTOR, LOW);
+      	digitalWrite(ENTRADA_DOS_MOTOR, LOW);
+      }
+
+      if (banderaSwitch)
+      {
+        contadorDecena = 0;
+        contadorUnidad = 0;
+        banderaSwitch = false;
+      }
+      // Control del boton Sube
+      if (sube == 1)
+      {
+        noPresionoSube = 1;
+      }
+      if (sube == 0 && noPresionoSube == 1)
+      {
+        noPresionoSube = 0;
+        contadorDecena += 1;
+        contadorUnidad += 10;
+      }
+
+      // Control del boton Baja
+      if (baja == 1)
+      {
+        noPresionoBaja = 1;
+      }
+      if (baja == 0 && noPresionoBaja == 1)
+      {
+        noPresionoBaja = 0;
+        contadorDecena -= 1;
+        contadorUnidad -= 10;
+      }
+
+      // Se controla el rango -> Decena
+      if(contadorDecena == 100)
+      {
+        contadorDecena = 0;
+      }
+      else if(contadorDecena == -1)
+      {
+        contadorDecena = 99;
+      }
+
+      // Se controla el rango -> Unidad
+      if(contadorUnidad == 100)
+      {
+        contadorUnidad = 0;
+      }
+      else if(contadorUnidad == -10)
+      {
+        contadorUnidad = 90;
+      }
+
+      imprimirDisplay(contadorDecena/10, contadorUnidad/10); 
+      break;
+    }
   }
-  if (reset == 0 && noPresionoReset == 1)
-  {
-    noPresionoReset = 0;
-    contadorDecena = 0;
-	contadorUnidad = 0;
-  }
-  
-  // Se controla a los acumuladores
-  // Decena
-  if(contadorDecena == 100)
-  {
-    contadorDecena = 0;
-  }
-  else if(contadorDecena == -1)
-  {
-    contadorDecena = 99;
-  }
-  
-  // Unidad
-  if(contadorUnidad == 100)
-  {
-    contadorUnidad = 0;
-  }
-  else if(contadorUnidad == -10)
-  {
-    contadorUnidad = 90;
-  }
-  
-  imprimirDisplay(contadorDecena, contadorUnidad);
 }
 
 void imprimirDisplay (int contadorDecena, int contadorUnidad)
 {
   prendeDisplay(APAGADOS);
-  imprimirDigito(contadorDecena / 10);
+  imprimirDigito(contadorDecena);
   prendeDisplay(DECENA);
   
   prendeDisplay(APAGADOS);
-  imprimirDigito(contadorUnidad / 10);
+  imprimirDigito(contadorUnidad);
   prendeDisplay(UNIDAD);
 }
 
@@ -151,23 +270,16 @@ void imprimirDigito (int digito)
   {
     case 1:
     {
-      digitalWrite(A, LOW);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
-      digitalWrite(D, LOW);
-      digitalWrite(E, LOW);
-      digitalWrite(F, LOW);
-      digitalWrite(G, LOW);
       break;
     }
     case 2:
     {
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
-      digitalWrite(C, LOW);
       digitalWrite(D, HIGH);
       digitalWrite(E, HIGH);
-      digitalWrite(F, LOW);
       digitalWrite(G, HIGH);
       break;
     }
@@ -177,18 +289,13 @@ void imprimirDigito (int digito)
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
       digitalWrite(D, HIGH);
-      digitalWrite(E, LOW);
-      digitalWrite(F, LOW);
       digitalWrite(G, HIGH);
       break;
     }
     case 4:
     {
-      digitalWrite(A, LOW);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
-      digitalWrite(D, LOW);
-      digitalWrite(E, LOW);
       digitalWrite(F, HIGH);
       digitalWrite(G, HIGH);
       break;
@@ -196,10 +303,8 @@ void imprimirDigito (int digito)
     case 5:
     {
       digitalWrite(A, HIGH);
-      digitalWrite(B, LOW);
       digitalWrite(C, HIGH);
       digitalWrite(D, HIGH);
-      digitalWrite(E, LOW);
       digitalWrite(F, HIGH);
       digitalWrite(G, HIGH);
       break;
@@ -207,7 +312,6 @@ void imprimirDigito (int digito)
     case 6:
     {
       digitalWrite(A, HIGH);
-      digitalWrite(B, LOW);
       digitalWrite(C, HIGH);
       digitalWrite(D, HIGH);
       digitalWrite(E, HIGH);
@@ -220,10 +324,6 @@ void imprimirDigito (int digito)
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
-      digitalWrite(D, LOW);
-      digitalWrite(E, LOW);
-      digitalWrite(F, LOW);
-      digitalWrite(G, LOW);
       break;
     }
     case 8:
@@ -242,8 +342,6 @@ void imprimirDigito (int digito)
       digitalWrite(A, HIGH);
       digitalWrite(B, HIGH);
       digitalWrite(C, HIGH);
-      digitalWrite(D, LOW);
-      digitalWrite(E, LOW);
       digitalWrite(F, HIGH);
       digitalWrite(G, HIGH);
       break;
@@ -256,8 +354,71 @@ void imprimirDigito (int digito)
       digitalWrite(D, HIGH);
       digitalWrite(E, HIGH);
       digitalWrite(F, HIGH);
-      digitalWrite(G, LOW);
       break;
     }
+  }
+}
+
+bool esPrimo(int numero) {
+  // Casos especiales
+  if (numero == 0 || numero == 1 || numero == 4) return false;
+  for (int x = 2; x < numero ; x++) {
+    if (numero % x == 0) return false;
+  }
+  // Si no se pudo dividir por ninguno de los de arriba, sí es primo
+  return true;
+}
+
+void numeroPrimoDisplay(int numeroPrimo)
+{
+  if (numeroPrimo < 10)
+  {
+      contadorDecena = 0;
+      contadorUnidad = numeroPrimo;
+  }
+  if (numeroPrimo > 10 && numeroPrimo < 20)
+  {
+      contadorDecena = 1;
+      contadorUnidad = numeroPrimo -10;
+  }
+  if (numeroPrimo > 20 && numeroPrimo < 30)
+  {
+      contadorDecena = 2;
+      contadorUnidad = numeroPrimo -20;
+  }
+  if (numeroPrimo > 30 && numeroPrimo < 40)
+  {
+      contadorDecena = 3;
+      contadorUnidad = numeroPrimo -30;
+  }
+  if (numeroPrimo > 40 && numeroPrimo < 50)
+  {
+      contadorDecena = 4;
+      contadorUnidad = numeroPrimo -40;
+  }
+  if (numeroPrimo > 50 && numeroPrimo < 60)
+  {
+      contadorDecena = 5;
+      contadorUnidad = numeroPrimo -50;
+  }
+  if (numeroPrimo > 60 && numeroPrimo < 70)
+  {
+      contadorDecena = 6;
+      contadorUnidad = numeroPrimo -60;
+  }
+  if (numeroPrimo > 70 && numeroPrimo < 80)
+  {
+      contadorDecena = 7;
+      contadorUnidad = numeroPrimo -70;
+  }
+  if (numeroPrimo > 80 && numeroPrimo < 90)
+  {
+      contadorDecena = 8;
+      contadorUnidad = numeroPrimo -80;
+  }
+  if (numeroPrimo > 90 && numeroPrimo < 100)
+  {
+      contadorDecena = 9;
+      contadorUnidad = numeroPrimo -90;
   }
 }
