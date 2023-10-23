@@ -28,11 +28,12 @@ Por otra parte, se contará con dos display 7 segmentos, los cuales a través de
 ```C (lenguaje en el que esta escrito)
 void loop()
 {
+  // Lecturas de los sensores.
   int lecturaSensorTemperatura = analogRead(SENSOR_TEMPERATURA);
   int temperatura = map(lecturaSensorTemperatura,20,358,-40,125);
   int lecturaFotodiodo = analogRead(FOTODIODO);
 
-  if (Serial.available()>0){// Control de encendido del motor
+  if (Serial.available()>0){// Control de encendido del motor por terminal.
     int opcion = Serial.read();
     if (opcion == '1'){
       Serial.println("Motor prendido (Temp. Funcionamiento -> 0 C a 30 C)");
@@ -56,18 +57,19 @@ void loop()
   }
 
   if (banderaPrendido){
+    // Lecturas de los botones "sube" / "baja" y interruptor deslizante.
     int sube = digitalRead(SUBE);
     int baja = digitalRead(BAJA);
     int modo = digitalRead(MODO);
 
-    switch (modo){// Control del Modo de funcionamiento
-      case 1: // Numeros primos y Giro (+)
-        controlTemperatura(temperatura,0,30,1,0);// Control Temperatura
-        controlFotodiodo (lecturaFotodiodo,2);// Control Fotodiodo
+    switch (modo){// Control del Modo de funcionamiento.
+      case 1: // Numeros primos y Giro (+).
+        controlTemperatura(temperatura,0,30,1,0);// Control Temperatura.
+        controlFotodiodo (lecturaFotodiodo,2);// Control Fotodiodo.
 
         banderaSwitch = true;
 
-        if (sube == 1){// Control del boton Sube
+        if (sube == 1){// Control del boton Sube.
           noPresionoSube = 1;
         }
         if (sube == 0 && noPresionoSube == 1){
@@ -77,7 +79,7 @@ void loop()
             contadorPrimos += 1;
           }
         }
-        if (baja == 1){// Control del boton Baja
+        if (baja == 1){// Control del boton Baja.
           noPresionoBaja = 1;
         }
         if (baja == 0 && noPresionoBaja == 1){
@@ -87,7 +89,7 @@ void loop()
             contadorPrimos -= 1;
           }
         }
-        if(contadorPrimos > 97){// Se controla el rango
+        if(contadorPrimos > 97){// Se controla el rango numeros primos.
           contadorPrimos = 2;
         }
         else if(contadorPrimos < 0){
@@ -97,9 +99,9 @@ void loop()
         imprimirDisplay(contadorDecena, contadorUnidad);
         break;
 
-      case 0: // Contador y Giro (-)
-        controlTemperatura(temperatura,0,30,0,1);// Control Temperatura
-        controlFotodiodo (lecturaFotodiodo,2);// Control Fotodiodo
+      case 0: // Contador y Giro (-).
+        controlTemperatura(temperatura,0,30,0,1);// Control Temperatura.
+        controlFotodiodo (lecturaFotodiodo,2);// Control Fotodiodo.
 
         if (banderaSwitch){
           contadorDecena = 0;
@@ -107,7 +109,7 @@ void loop()
           banderaSwitch = false;
         }
 
-        if (sube == 1){// Control del boton Sube
+        if (sube == 1){// Control del boton Sube.
           noPresionoSube = 1;
         }
         if (sube == 0 && noPresionoSube == 1){
@@ -115,7 +117,7 @@ void loop()
           contadorDecena += 1;
           contadorUnidad += 10;
         }
-        if (baja == 1){// Control del boton Baja
+        if (baja == 1){// Control del boton Baja.
           noPresionoBaja = 1;
         }
         if (baja == 0 && noPresionoBaja == 1){
@@ -123,13 +125,13 @@ void loop()
           contadorDecena -= 1;
           contadorUnidad -= 10;
         }
-        if(contadorDecena == 100){// Se controla el rango -> Decena
+        if(contadorDecena == 100){// Se controla el rango -> Decena.
           contadorDecena = 0;
         }
         else if(contadorDecena == -1){
           contadorDecena = 99;
         }
-        if(contadorUnidad == 100){// Se controla el rango -> Unidad
+        if(contadorUnidad == 100){// Se controla el rango -> Unidad.
           contadorUnidad = 0;
         }
         else if(contadorUnidad == -10){
